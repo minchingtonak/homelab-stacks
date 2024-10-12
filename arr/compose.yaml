@@ -82,20 +82,20 @@ services:
   #   ports:
   #     - 8989:8989
 
-  # radarr:
-  #   image: lscr.io/linuxserver/radarr:latest
-  #   container_name: radarr
-  #   restart: unless-stopped
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=100
-  #     - TZ=America/Los_Angeles
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /docker/radarr:/config
-  #     - /data:/data
-  #   ports:
-  #     - 7878:7878
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      # - PUID=1000
+      # - PGID=100
+      - TZ=America/Los_Angeles
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${RADARR_DATA_PATH}:/config
+      - ${RADARR_MOVIES_PATH}:/data
+    ports:
+      - 7878:7878
 
   # lidarr:
   #   container_name: lidarr
