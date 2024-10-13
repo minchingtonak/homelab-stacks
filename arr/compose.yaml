@@ -10,7 +10,10 @@ services:
     ports:
       - 8089:8089 # qbittorrent web interface
       - 6881:6881 # qbittorrent torrent port
-      - 6881:6881/udp
+      - 6881:6881/udp # qbittorrent torrent port
+      - 9696:9696 # prowlarr
+      - 8989:8989 # sonarr
+      - 7878:7878 # radarr
     volumes:
       - ${GLUETUN_DATA_PATH}:/gluetun
     environment:
@@ -20,83 +23,72 @@ services:
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
       - SERVER_COUNTRIES=Germany,Netherlands,Sweden,Switzerland,UK,USA
     restart: unless-stopped
+  # https://docs.linuxserver.io/images/docker-qbittorrent/#usage
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     restart: unless-stopped
     environment:
-      # - PUID=1000
-      # - PGID=1000
+      - PUID=3000
+      - PGID=3000
       - TZ=America/Los_Angeles
       - WEBUI_PORT=8089
       - TORRENTING_PORT=6881
     volumes:
-      - ${QBITTORRENT_DATA_PATH}:/config
-      - ${QBITTORRENT_DOWNLOADS_PATH}:/downloads
-      - ${QBITTORRENT_DOWNLOADS_PATH}/incomplete:/downloads/incomplete
-      - ${QBITTORRENT_DOWNLOADS_PATH}/anime:/downloads/anime
-      - ${QBITTORRENT_DOWNLOADS_PATH}/shows:/downloads/shows
-      - ${QBITTORRENT_DOWNLOADS_PATH}/movies:/downloads/movies
+      - ${QBITTORRENT_CONFIG_PATH}:/config
+      - ${QBITTORRENT_DATA_PATH}:/data
     network_mode: service:gluetun
-  # nzbget:
-  #   image: lscr.io/linuxserver/nzbget:latest
-  #   container_name: nzbget
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=America/Los_Angeles
-  #     - NZBGET_USER=user
-  #     - NZBGET_PASS=password
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /docker/nzbget:/config
-  #     - /data:/data
-  #   restart: unless-stopped
-  #   network_mode: service:gluetun
-
-  # prowlarr:
-  #   image: lscr.io/linuxserver/prowlarr:latest
-  #   container_name: prowlarr
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=America/Los_Angeles
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /docker/prowlarr:/config
-  #   restart: unless-stopped
-  #   network_mode: service:gluetun
-
-  # sonarr:
-  #   image: lscr.io/linuxserver/sonarr:latest
-  #   container_name: sonarr
-  #   restart: unless-stopped
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=America/Los_Angeles
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /docker/sonarr:/config
-  #     - /data:/data
-  #   ports:
-  #     - 8989:8989
-
+    depends_on:
+      - gluetun
+  # https://docs.linuxserver.io/images/docker-prowlarr/#usage
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=3000
+      - PGID=3000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${PROWLARR_CONFIG_PATH}:/config
+    restart: unless-stopped
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
+      - radarr
+      - sonarr
+  # https://docs.linuxserver.io/images/docker-sonarr/#usage
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=3000
+      - PGID=3000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${SONARR_CONFIG_PATH}:/config
+      - ${SONARR_DATA_PATH}:/data
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
+  # https://docs.linuxserver.io/images/docker-radarr/#usage
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     restart: unless-stopped
     environment:
-      # - PUID=1000
-      # - PGID=100
+      - PUID=3000
+      - PGID=3000
       - TZ=America/Los_Angeles
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${RADARR_DATA_PATH}:/config
-      - ${RADARR_MOVIES_PATH}:/data
-    ports:
-      - 7878:7878
-
+      - ${RADARR_CONFIG_PATH}:/config
+      - ${RADARR_DATA_PATH}:/data
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
   # lidarr:
   #   container_name: lidarr
   #   image: lscr.io/linuxserver/lidarr:latest
@@ -141,4 +133,20 @@ services:
   #   ports:
   #     - 8787:8787
   #   restart: unless-stopped
+
+  # nzbget:
+  #   image: lscr.io/linuxserver/nzbget:latest
+  #   container_name: nzbget
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=America/Los_Angeles
+  #     - NZBGET_USER=user
+  #     - NZBGET_PASS=password
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /docker/nzbget:/config
+  #     - /data:/data
+  #   restart: unless-stopped
+  #   network_mode: service:gluetun
 networks: {}
