@@ -3,10 +3,11 @@ services:
     # uses port 8096
     image: jellyfin/jellyfin
     container_name: jellyfin
-    # user: uid:gid
+    user: 3000:3000
     network_mode: host
     volumes:
       - ${JELLYFIN_CONFIG_PATH}:/config
+      - ${JELLYFIN_CACHE_PATH}:/cache
       - ${JELLYFIN_DATA_PATH}:/data
     restart: unless-stopped
 networks: {}
