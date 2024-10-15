@@ -1,4 +1,6 @@
 # based on https://github.com/TechHutTV/homelab/blob/be80f0899f6fa8bd7f164867e2acf9516b3103aa/media/arr-compose.yaml
+#
+# _CONFIG_PATHs should point to app-specific config folders
 services:
   gluetun:
     image: qmcgaw/gluetun
@@ -16,12 +18,12 @@ services:
       - 8989:8989 # sonarr
       - 9696:9696 # prowlarr
     volumes:
-      - ${GLUETUN_DATA_PATH}:/gluetun
+      - ${GLUETUN_CONFIG_PATH}:/gluetun
     environment:
       - VPN_SERVICE_PROVIDER=mullvad
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES} # ex: 10.73.65.231/32
       - SERVER_COUNTRIES=Germany,Netherlands,Sweden,Switzerland,UK,USA
     restart: unless-stopped
   # https://docs.linuxserver.io/images/docker-qbittorrent/#usage
@@ -37,7 +39,7 @@ services:
       - TORRENTING_PORT=6881
     volumes:
       - ${QBITTORRENT_CONFIG_PATH}:/config
-      - ${QBITTORRENT_DATA_PATH}:/data
+      - ${MEDIA_PATH}:/data
     network_mode: service:gluetun
     depends_on:
       - gluetun
@@ -53,7 +55,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${SONARR_CONFIG_PATH}:/config
-      - ${SONARR_DATA_PATH}:/data
+      - ${MEDIA_PATH}:/data
     network_mode: service:gluetun
     depends_on:
       - gluetun
@@ -69,7 +71,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${RADARR_CONFIG_PATH}:/config
-      - ${RADARR_DATA_PATH}:/data
+      - ${MEDIA_PATH}:/data
     network_mode: service:gluetun
     depends_on:
       - gluetun
@@ -102,7 +104,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${BAZARR_CONFIG_PATH}:/config
-      - ${BAZARR_DATA_PATH}:/data
+      - ${MEDIA_PATH}:/data
     network_mode: service:gluetun
     depends_on:
       - gluetun
