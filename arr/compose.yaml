@@ -11,12 +11,13 @@ services:
       - /dev/net/tun:/dev/net/tun
     ports:
       - 6767:6767 # bazarr
-      - 6881:6881 # qbittorrent torrent port
-      - 6881:6881/udp # qbittorrent torrent port
+      - 6881:6881 # deluge
+      - 6881:6881/udp # deluge
       - 7878:7878 # radarr
-      - 8089:8089 # qbittorrent web interface
+      - 8112:8112 # deluge web interface
       - 8989:8989 # sonarr
       - 9696:9696 # prowlarr
+      - 58846:58846 # deluge thin client
     volumes:
       - ${GLUETUN_CONFIG_PATH}:/gluetun
     environment:
@@ -26,20 +27,19 @@ services:
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES} # ex: 10.73.65.231/32
       - SERVER_COUNTRIES=Germany,Netherlands,Sweden,Switzerland,UK,USA
     restart: unless-stopped
-  # https://docs.linuxserver.io/images/docker-qbittorrent/#usage
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
-    container_name: qbittorrent
-    restart: unless-stopped
+  # https://docs.linuxserver.io/images/docker-deluge/#usage
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
     environment:
       - PUID=3000
       - PGID=3000
       - TZ=America/Los_Angeles
-      - WEBUI_PORT=8089
-      - TORRENTING_PORT=6881
+      - DELUGE_LOGLEVEL=info
     volumes:
-      - ${QBITTORRENT_CONFIG_PATH}:/config
+      - ${DELUGE_CONFIG_PATH}:/config
       - ${MEDIA_PATH}:/data
+    restart: unless-stopped
     network_mode: service:gluetun
     depends_on:
       - gluetun
