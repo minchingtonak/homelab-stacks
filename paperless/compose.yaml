@@ -21,24 +21,10 @@
 #   parts.
 #
 # Follow these instructions https://docs.paperless-ngx.com/setup#docker_hub
-# 
+#
 # make sure to run `python3 manage.py createsuperuser` within the webserver container to create the admin user
 
 services:
-  broker:
-    image: docker.io/library/redis:7
-    restart: unless-stopped
-    volumes:
-      - ${BROKER_DATA_PATH}:/data
-  db:
-    image: docker.io/library/postgres:16
-    restart: unless-stopped
-    volumes:
-      - ${DB_DATA_PATH}:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: paperless
-      POSTGRES_USER: paperless
-      POSTGRES_PASSWORD: paperless
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: unless-stopped
@@ -62,6 +48,20 @@ services:
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+  broker:
+    image: docker.io/library/redis:7
+    restart: unless-stopped
+    volumes:
+      - ${BROKER_DATA_PATH}:/data
+  db:
+    image: docker.io/library/postgres:16
+    restart: unless-stopped
+    volumes:
+      - ${DB_DATA_PATH}:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: paperless
   gotenberg:
     image: docker.io/gotenberg/gotenberg:8.7
     restart: unless-stopped
