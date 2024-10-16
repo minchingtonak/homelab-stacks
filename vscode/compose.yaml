@@ -1,0 +1,16 @@
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    environment:
+      - PUID=3000
+      - PGID=3000
+      - TZ=America/Los_Angeles
+      - PASSWORD=${VSCODE_PASSWORD}
+      - SUDO_PASSWORD=${VSCODE_SUDO_PASSWORD}
+      - DEFAULT_WORKSPACE=/config/workspace
+    volumes:
+      - ${VSCODE_CONFIG_PATH}:/config
+    ports:
+      - 8443:8443
+    restart: unless-stopped
