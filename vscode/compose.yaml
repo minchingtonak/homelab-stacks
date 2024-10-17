@@ -11,6 +11,8 @@ services:
       - DEFAULT_WORKSPACE=/config/workspace
     volumes:
       - ${VSCODE_CONFIG_PATH}:/config
+      - ${VSCODE_WORKSPACE_PATH}:/config/workspace
     ports:
       - 8443:8443
     restart: unless-stopped
+networks: {}
