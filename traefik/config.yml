@@ -1,0 +1,7 @@
+http:
+  services:
+    jellyfin-svc:
+      loadBalancer:
+        servers:
+        # should point to local address of jellyfin with http port (8096 by default)
+          - url: http://192.168.0.1:8096

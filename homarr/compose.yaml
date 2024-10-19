@@ -12,6 +12,18 @@ services:
       - ${HOMARR_CONFIG_PATH}:/app/data/configs
       - ${HOMARR_ICONS_PATH}:/app/public/icons
       - ${HOMARR_DATA_PATH}:/data
-    ports:
-      - 7575:7575
-networks: {}
+    environment:
+      - BASE_URL=${HOMARR_PROXY_DOMAIN}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homarr.rule=Host(`${HOMARR_PROXY_DOMAIN}`)
+      - traefik.http.routers.homarr.entrypoints=https
+      - traefik.http.routers.homarr.tls=true
+      - traefik.http.routers.homarr.tls.certresolver=porkbun
+      - traefik.http.services.homarr.loadbalancer.server.port=7575
+    networks:
+      - traefik
+networks:
+  traefik:
+    external: true
+

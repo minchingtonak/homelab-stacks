@@ -1,6 +1,15 @@
+# Be warned! Do not try and deploy this stack by itself
+
+# The only way I could get jellyfin to be correctly proxied through traefik is by keeping the network_mode
+# as 'host'. This complicates things because you cannot connect a container to an external network if it's
+# in host mode. The example online that solve this do it by including the proxy and jellyfin in the same
+# stack, but I don't want to do that. My compromise is to define the stack here, in its own file, then
+# import it into the traefik stack so it can be proxied correctly.
+
+# it may also be worth looking into setting traefik to host network mode since then no containers need
+# an external network afaict.
 services:
   jellyfin:
-    # uses port 8096
     image: jellyfin/jellyfin
     container_name: jellyfin
     user: 3000:3000
@@ -9,6 +18,35 @@ services:
       - ${JELLYFIN_CONFIG_PATH}:/config
       - ${JELLYFIN_CACHE_PATH}:/cache
       - ${JELLYFIN_DATA_PATH}:/data
+    labels:
+      # see for explanation of configuration: https://jellyfin.org/docs/general/networking/traefik2#docker-composeyml
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.entryPoints=https
+      - traefik.http.routers.jellyfin.rule=Host(`${JELLYFIN_PROXY_HOSTNAME}.${JELLYFIN_PROXY_DOMAIN}`)
+      - traefik.http.routers.jellyfin.tls=true
+      - traefik.http.routers.jellyfin.tls.certResolver=porkbun
+      - traefik.http.routers.jellyfin.tls.domains=${JELLYFIN_PROXY_HOSTNAME}.${JELLYFIN_PROXY_DOMAIN}
+      - traefik.http.routers.jellyfin.middlewares=jellyfin-mw
+      - traefik.http.middlewares.jellyfin-mw.headers.customResponseHeaders.X-Robots-Tag=noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex
+      - traefik.http.middlewares.jellyfin-mw.headers.SSLRedirect=true
+      - traefik.http.middlewares.jellyfin-mw.headers.SSLHost=${JELLYFIN_PROXY_HOSTNAME}.${JELLYFIN_PROXY_DOMAIN}
+      - traefik.http.middlewares.jellyfin-mw.headers.SSLForceHost=true
+      - traefik.http.middlewares.jellyfin-mw.headers.STSSeconds=315360000
+      - traefik.http.middlewares.jellyfin-mw.headers.STSIncludeSubdomains=true
+      - traefik.http.middlewares.jellyfin-mw.headers.STSPreload=true
+      - traefik.http.middlewares.jellyfin-mw.headers.forceSTSHeader=true
+      - traefik.http.middlewares.jellyfin-mw.headers.frameDeny=true
+      - traefik.http.middlewares.jellyfin-mw.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.jellyfin-mw.headers.customresponseheaders.X-XSS-PROTECTION=1
+      - traefik.http.routers.jellyfin.service=jellyfin-svc@file
+      - traefik.http.services.jellyfin-svc.loadBalancer.server.port=8096
+      - traefik.http.services.jellyfin-svc.loadBalancer.passHostHeader=true
+      - traefik.http.routers.jellyfin-insecure.entryPoints=https
+      - traefik.http.routers.jellyfin-insecure.rule=Host(`${JELLYFIN_PROXY_HOSTNAME}.${JELLYFIN_PROXY_DOMAIN}`)
+      - traefik.http.routers.jellyfin-insecure.middlewares=jellyfin-insecure-mw
+      - traefik.http.middlewares.jellyfin-insecure-mw.redirectscheme.scheme=https
+      - traefik.http.middlewares.jellyfin-insecure-mw.redirectscheme.permanent=false
+      - traefik.http.routers.jellyfin-insecure.service=noop@internal
     restart: unless-stopped
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
@@ -21,5 +59,15 @@ services:
       - 5055:5055
     volumes:
       - ${JELLYSEERR_CONFIG_PATH}:/app/config
+    labels:
+      # https://docs.jellyseerr.dev/extending-jellyseerr/reverse-proxy?nginx-reverse-proxy=nginx-proxy-manager#traefik-v2
+      - traefik.enable=true
+      - traefik.http.routers.jellyseerr-rtr.entrypoints=https
+      - traefik.http.routers.jellyseerr-rtr.rule=Host(`${JELLYSEERR_PROXY_DOMAIN}`)
+      - traefik.http.routers.jellyseerr-rtr.tls=true
+      - traefik.http.routers.jellyseerr-rtr.service=jellyseerr-svc
+      - traefik.http.services.jellyseerr-svc.loadbalancer.server.port=5055
     restart: unless-stopped
+    networks:
+      - traefik
 networks: {}
