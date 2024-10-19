@@ -11,6 +11,7 @@ services:
     environment:
       - PORKBUN_API_KEY=${PORKBUN_API_KEY}
       - PORKBUN_SECRET_API_KEY=${PORKBUN_SECRET_API_KEY}
+      - JELLYFIN_LOCAL_URL=${JELLYFIN_LOCAL_URL}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
