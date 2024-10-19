@@ -1,0 +1,118 @@
+- Media:
+    - Jellyfin:
+        href: {{HOMEPAGE_VAR_JELLYFIN_URL}}
+        description: Watch movies and shows
+        icon: sh-jellyfin.svg
+        siteMonitor: {{HOMEPAGE_VAR_JELLYFIN_URL}}
+        widget:
+            type: jellyfin
+            url: {{HOMEPAGE_VAR_JELLYFIN_URL}}
+            key: {{HOMEPAGE_VAR_JELLYFIN_API_KEY}}
+            enableBlocks: true # optional, defaults to false
+            enableNowPlaying: true # optional, defaults to true
+            enableUser: true # optional, defaults to false
+            showEpisodeNumber: true # optional, defaults to false
+            expandOneStreamToTwoRows: true # optional, defaults to true
+    - Jellyseerr:
+        href: {{HOMEPAGE_VAR_JELLYSEERR_URL}}
+        description: Find and request new movies and shows
+        icon: sh-jellyseerr.svg
+        siteMonitor: {{HOMEPAGE_VAR_JELLYSEERR_URL}}
+        widget:
+          type: jellyseerr
+          url: {{HOMEPAGE_VAR_JELLYSEERR_URL}}
+          key: {{HOMEPAGE_VAR_JELLYSEERR_API_KEY}}
+    - Radarr:
+        href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:7878
+        description: Automates the process of finding and downloading movies
+        icon: sh-radarr.svg
+        siteMonitor: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:7878
+        widget:
+            type: radarr
+            url: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:7878
+            key: {{HOMEPAGE_VAR_RADARR_API_KEY}}
+            enableQueue: true # optional, defaults to false
+    - Sonarr:
+        href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:8989
+        description: Automates the process of finding and downloading shows
+        icon: sh-sonarr.svg
+        siteMonitor: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:8989
+        widget:
+            type: sonarr
+            url: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:8989
+            key: {{HOMEPAGE_VAR_SONARR_API_KEY}}
+            enableQueue: true # optional, defaults to false
+    - Prowlarr:
+        href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9696
+        description: Automates the process of searching multiple torrent indices
+        icon: sh-prowlarr.svg
+        siteMonitor: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9696
+        widget:
+            type: prowlarr
+            url: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9696
+            key: {{HOMEPAGE_VAR_PROWLARR_API_KEY}}
+    - Bazarr:
+        href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:6767
+        description: Automatically finds and downloads subtitles for your media
+        icon: bazarr.svg
+        siteMonitor: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:6767
+        widget:
+            type: bazarr
+            url: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:6767
+            key: {{HOMEPAGE_VAR_BAZARR_API_KEY}}
+    - qBittorrent:
+        href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:8089
+        description: Download and manage torrents
+        icon: sh-qbittorrent.svg
+        siteMonitor: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:8089
+        widget:
+            type: qbittorrent
+            url: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:8089
+            username: {{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}
+            password: {{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}
+
+- Infra:
+    - Traefik:
+        href: {{HOMEPAGE_VAR_TRAEFIK_URL}}
+        description: Dashboard to view Trafik configuration and status
+        icon: sh-traefik.svg
+        siteMonitor: {{HOMEPAGE_VAR_TRAEFIK_URL}}
+        # widget:
+        #     type: traefik
+        #     url: https://td.minch.ing
+        #     username: {{HOMEPAGE_VAR_TRAEFIK_USERNAME}}
+        #     password: {{HOMEPAGE_VAR_TRAEFIK_PASSWORD}}
+    - Pi-hole:
+        href: {{HOMEPAGE_VAR_PIHOLE_URL}}
+        description: Dashboard to view and manage Pi-hole configuration
+        icon: sh-pi-hole.svg
+        siteMonitor: {{HOMEPAGE_VAR_PIHOLE_URL}}
+        # widget:
+        #     type: pihole
+        #     url: http://192.168.0.31
+        #     version: 6 # required if running v6 or higher, defaults to 5
+        #     key: {{HOMEPAGE_VAR_PIHOLE_API_KEY}} # optional
+    - Dockge:
+        href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:5001
+        description: A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
+        icon: sh-dockge.svg
+        siteMonitor: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:5001
+    - TrueNAS:
+        href: https://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9443
+        description: Dashboard to view and manage TrueNAS configuration
+        icon: sh-truenas-scale.svg
+        siteMonitor: https://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9443
+        # widget:
+        #     type: truenas
+        #     url: https://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9080
+        #     key: {{HOMEPAGE_VAR_TRUENAS_API_KEY}}
+    - VS Code:
+        href: {{HOMEPAGE_VAR_VSCODE_URL}}
+        description: Edit files on the homelab
+        icon: sh-coder-light.svg
+        siteMonitor: {{HOMEPAGE_VAR_VSCODE_URL}}
+    - Homepage:
+        href: {{HOMEPAGE_VAR_HOMEPAGE_URL}}
+        description: An overview of your homelab
+        icon: sh-homepage.png
+        siteMonitor: {{HOMEPAGE_VAR_HOMEPAGE_URL}}

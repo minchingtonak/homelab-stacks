@@ -1,0 +1,45 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - 3000:3000
+    environment:
+      - HOMEPAGE_VAR_HOMELAB_LOCAL_IP=${HOMELAB_LOCAL_IP}
+      - HOMEPAGE_VAR_BAZARR_API_KEY=${BAZARR_API_KEY}
+      - HOMEPAGE_VAR_JELLYFIN_API_KEY=${JELLYFIN_API_KEY}
+      - HOMEPAGE_VAR_JELLYSEERR_API_KEY=${JELLYSEERR_API_KEY}
+      - HOMEPAGE_VAR_PIHOLE_API_KEY=${PIHOLE_API_KEY}
+      - HOMEPAGE_VAR_PROWLARR_API_KEY=${PROWLARR_API_KEY}
+      - HOMEPAGE_VAR_QBITTORRENT_USERNAME=${QBITTORRENT_USERNAME}
+      - HOMEPAGE_VAR_QBITTORRENT_PASSWORD=${QBITTORRENT_PASSWORD}
+      - HOMEPAGE_VAR_RADARR_API_KEY=${RADARR_API_KEY}
+      - HOMEPAGE_VAR_SONARR_API_KEY=${SONARR_API_KEY}
+      - HOMEPAGE_VAR_TRAEFIK_USERNAME=${TRAEFIK_USERNAME}
+      - HOMEPAGE_VAR_TRAEFIK_PASSWORD=${TRAEFIK_PASSWORD}
+      - HOMEPAGE_VAR_TRUENAS_API_KEY=${TRUENAS_API_KEY}
+      - HOMEPAGE_VAR_JELLYFIN_URL=${JELLYFIN_URL}
+      - HOMEPAGE_VAR_JELLYSEERR_URL=${JELLYSEERR_URL}
+      - HOMEPAGE_VAR_TRAEFIK_URL=${TRAEFIK_URL}
+      - HOMEPAGE_VAR_PIHOLE_URL=${PIHOLE_URL}
+      - HOMEPAGE_VAR_VSCODE_URL=${VSCODE_URL}
+      - HOMEPAGE_VAR_HOMEPAGE_URL=${HOMEPAGE_URL}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homepage.rule=Host(`${HOMEPAGE_PROXY_DOMAIN}`)
+      - traefik.http.routers.homepage.entrypoints=https
+      - traefik.http.routers.homepage.tls=true
+      - traefik.http.routers.homepage.tls.certresolver=porkbun
+      - traefik.http.services.homepage.loadbalancer.server.port=3000
+    volumes:
+      - ${HOMEPAGE_CONFIG_PATH}:/app/config
+      - ./settings.yaml:/app/config/settings.yaml
+      - ./services.yaml:/app/config/services.yaml
+      - ./bookmarks.yaml:/app/config/bookmarks.yaml
+      - ./docker.yaml:/app/config/docker.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik
+networks:
+  traefik:
+    external: true
