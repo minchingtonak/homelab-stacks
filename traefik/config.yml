@@ -2,6 +2,6 @@ http:
   services:
     jellyfin-svc:
       loadBalancer:
-        servers:
         # should point to local address of jellyfin with http port (8096 by default)
+        servers:
           - url: {{ env "JELLYFIN_LOCAL_URL" }}

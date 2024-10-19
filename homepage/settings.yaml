@@ -3,6 +3,7 @@ title: Homelab
 theme: dark # or light
 color: slate
 headerStyle: boxedWidgets
+showStats: true
 language: en
 target: _blank # Possible options include _blank, _self, and _top
 quicklaunch:

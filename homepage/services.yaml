@@ -19,9 +19,9 @@
         icon: sh-jellyseerr.svg
         siteMonitor: {{HOMEPAGE_VAR_JELLYSEERR_URL}}
         widget:
-          type: jellyseerr
-          url: {{HOMEPAGE_VAR_JELLYSEERR_URL}}
-          key: {{HOMEPAGE_VAR_JELLYSEERR_API_KEY}}
+            type: jellyseerr
+            url: {{HOMEPAGE_VAR_JELLYSEERR_URL}}
+            key: {{HOMEPAGE_VAR_JELLYSEERR_API_KEY}}
     - Radarr:
         href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:7878
         description: Automates the process of finding and downloading movies
@@ -93,10 +93,10 @@
         #     version: 6 # required if running v6 or higher, defaults to 5
         #     key: {{HOMEPAGE_VAR_PIHOLE_API_KEY}} # optional
     - Dockge:
-        href: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:5001
+        href: {{HOMEPAGE_VAR_DOCKGE_URL}}
         description: A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
         icon: sh-dockge.svg
-        siteMonitor: http://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:5001
+        siteMonitor: {{HOMEPAGE_VAR_DOCKGE_URL}}
     - TrueNAS:
         href: https://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9443
         description: Dashboard to view and manage TrueNAS configuration
@@ -106,11 +106,11 @@
         #     type: truenas
         #     url: https://{{HOMEPAGE_VAR_HOMELAB_LOCAL_IP}}:9080
         #     key: {{HOMEPAGE_VAR_TRUENAS_API_KEY}}
-    - VS Code:
-        href: {{HOMEPAGE_VAR_VSCODE_URL}}
-        description: Edit files on the homelab
+    - Code Server:
+        href: {{HOMEPAGE_VAR_CODE_SERVER_URL}}
+        description: Comfortably edit remote files from your browser
         icon: sh-coder-light.svg
-        siteMonitor: {{HOMEPAGE_VAR_VSCODE_URL}}
+        siteMonitor: {{HOMEPAGE_VAR_CODE_SERVER_URL}}
     - Homepage:
         href: {{HOMEPAGE_VAR_HOMEPAGE_URL}}
         description: An overview of your homelab
